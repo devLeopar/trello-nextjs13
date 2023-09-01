@@ -103,6 +103,7 @@ function Board() {
             {Array.from(board.columns.entries()).map(([id, column], index) => (
               <Column key={id} id={id} todos={column.todos} index={index} />
             ))}
+            {provided.placeholder}
           </div>
         )}
       </Droppable>
