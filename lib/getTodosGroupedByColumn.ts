@@ -38,8 +38,6 @@ export const getTodosGroupedByColumn = async () => {
     }
   }
 
-  console.log(columns);
-
   // sort the columns by their type
   const sortedColumns = new Map(
     Array.from(columns.entries()).sort(

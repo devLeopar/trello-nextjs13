@@ -16,7 +16,8 @@ function Board() {
   }, [getBoard]);
 
   const handleOnDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId, type } = result;
+    const { destination, source, type } = result;
+
     // Check if user dropped the item outside of a droppable
     if (!destination) return;
 
@@ -27,6 +28,66 @@ function Board() {
       entries.splice(destination.index, 0, removed);
       const reArrangedColumns = new Map(entries);
       setBoardState({ ...board, columns: reArrangedColumns });
+
+      // if dragging a todo
+    } else {
+      const columns = Array.from(board.columns);
+      const startColIndex = columns[Number(source.droppableId)];
+      const finishColIndex = columns[Number(destination.droppableId)];
+
+      const startCol: Column = {
+        id: startColIndex[0],
+        todos: startColIndex[1].todos,
+      };
+
+      const finishCol: Column = {
+        id: finishColIndex[0],
+        todos: finishColIndex[1].todos,
+      };
+
+
+      if (!startCol || !finishCol) return;
+
+      if (
+        source.index === destination.index &&
+        source.droppableId === destination.droppableId
+      )
+        return;
+
+      const newTodos = startCol.todos;
+      const [todoMoved] = newTodos.splice(source.index, 1);
+
+      if (startCol.id == finishCol.id) {
+        // Same column task drag
+        newTodos.splice(destination.index, 0, todoMoved);
+        const newCol = {
+          id: startCol.id,
+          todos: newTodos,
+        };
+        const newColumns = new Map(board.columns);
+        newColumns.set(startCol.id, newCol);
+        setBoardState({ ...board, columns: newColumns });
+      } else {
+        // dragging to another column
+        const finishTodos = Array.from(finishCol.todos);
+        finishTodos.splice(destination.index, 0, todoMoved);
+
+        const newColumns = new Map(board.columns);
+        const newCol = {
+          id: startCol.id,
+          todos: newTodos,
+        };
+
+        newColumns.set(startCol.id, newCol);
+        newColumns.set(finishCol.id, {
+          id: finishCol.id,
+          todos: finishTodos,
+        });
+
+        // Update in db
+
+        setBoardState({ ...board, columns: newColumns });
+      }
     }
   };
 
