@@ -7,10 +7,12 @@ interface BoardState {
   getBoard: () => void;
   setBoardState: (board: Board) => void;
   updateTodoInDB: (todo: Todo, columnID: TypedColumn) => void;
+  newTaskInput: string;
   searchString: string;
   setSearchString: (searchString: string) => void;
 
   deleteTask: (taskIndex: number, todoId: Todo, id: TypedColumn) => void;
+  setNewTaskInput: (input: string) => void;
 }
 
 export const useBoardStore = create<BoardState>((set, get) => ({
@@ -18,6 +20,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     columns: new Map<TypedColumn, Column>(),
   },
   searchString: "",
+  newTaskInput: "",
   setSearchString: (searchString) => set({ searchString }),
   getBoard: async () => {
     const board = await getTodosGroupedByColumn();
@@ -53,4 +56,5 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       todo.$id
     );
   },
+  setNewTaskInput: (input: string) => set({ newTaskInput: input }),
 }));
