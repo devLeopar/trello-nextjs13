@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import "./globals.css";
-
-
+import Modal from "@/components/Modal";
 
 export const metadata: Metadata = {
   title: "Trelo 2.0 Clone",
@@ -15,7 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body  suppressHydrationWarning={true} className="bg-[#F5F6F8]">{children}</body>
+      <body suppressHydrationWarning={true} className="bg-[#F5F6F8]">
+        {children}
+        <Modal />
+      </body>
     </html>
   );
 }
